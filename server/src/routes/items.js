@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// 📌 GET SINGLE ITEM — REQUIRED BY ItemDetailPage
+// 📌 GET SINGLE ITEM 
 router.get("/:id", async (req, res) => {
   try {
     const item = await Item.findById(req.params.id);
