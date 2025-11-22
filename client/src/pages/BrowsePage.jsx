@@ -9,7 +9,7 @@ export default function BrowsePage() {
   useEffect(() => {
     async function loadItems() {
       try {
-        const res = await api.get("/items");   // ← GET /api/items
+        const res = await api.get("/items");   
         setItems(res.data);
       } catch (err) {
         console.error("Failed to load items", err);

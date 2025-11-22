@@ -31,7 +31,7 @@ export default function MyItemsPage() {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
-    formData.append("image", imageFile); // 👈 important
+    formData.append("image", imageFile); 
 
     try {
       setLoading(true);

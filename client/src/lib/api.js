@@ -2,12 +2,12 @@ import axios from 'axios'
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE || 'http://localhost:4000/api',
-  withCredentials: true, // needed for refresh cookie
+  withCredentials: true, 
 })
 
-// This automatically fixes multipart uploads
+
 api.interceptors.request.use((config) => {
-  // If body is FormData, set multipart header
+
   if (config.data instanceof FormData) {
     config.headers['Content-Type'] = 'multipart/form-data'
   }

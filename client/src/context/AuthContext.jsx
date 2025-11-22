@@ -9,7 +9,7 @@ import api from "../lib/api";
 
 const AuthContext = createContext();
 console.log('[AuthContext] module loaded');
-// ⭐ THIS IS THE EXPORT VITE NEEDS — DO NOT REMOVE
+
 export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider({ children }) {
@@ -25,7 +25,7 @@ export function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // prevents ProtectedRoute from redirecting too early
+
   const [authReady, setAuthReady] = useState(false);
 
   // LOGIN
