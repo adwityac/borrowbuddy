@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+@apply bg-white text-gray-900 font-sans;
+}
+
+
+.card-shadow {
+box-shadow: 0 6px 18px rgba(17, 24, 39, 0.06);
+}
+
+
+.rounded-soft {
+border-radius: 14px;
+}
