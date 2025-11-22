@@ -90,7 +90,7 @@ It aims to promote **community sharing**, **sustainability**, and **resource eff
 
 ### **1. Clone the repository**
 ```bash
-git clone https://github.com/yourusername/borrowbuddy.git
+git clone https://github.com/adwityac/borrowbuddy.git
 cd borrowbuddy
 ```
 
