@@ -10,10 +10,14 @@ const PORT = process.env.PORT || 4000;
 // -------------------------
 // 1) CORE MIDDLEWARE FIRST
 // -------------------------
+const cors = require("cors");
+
 app.use(cors({
-  origin: process.env.FRONTEND_ORIGIN,
+  origin: ["https://borrowbuddy.vercel.app", "http://localhost:5173"],
   credentials: true
 }));
+
+
 
 app.use(express.json());           // parse JSON
 app.use(cookieParser());           // parse cookies
