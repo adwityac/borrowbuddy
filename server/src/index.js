@@ -8,20 +8,18 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 // -------------------------
-// 1) CORE MIDDLEWARE FIRST
+// 1) CORS + MIDDLEWARE
 // -------------------------
-const cors = require("cors");
+app.use(
+  cors({
+    origin: ["https://borrowbuddy.vercel.app", "http://localhost:5173"],
+    credentials: true
+  })
+);
 
-app.use(cors({
-  origin: ["https://borrowbuddy.vercel.app", "http://localhost:5173"],
-  credentials: true
-}));
-
-
-
-app.use(express.json());           // parse JSON
-app.use(cookieParser());           // parse cookies
-app.use("/uploads", express.static("uploads")); // serve images
+app.use(express.json());
+app.use(cookieParser());
+app.use("/uploads", express.static("uploads"));
 
 // -------------------------
 // 2) ROUTES
@@ -34,11 +32,12 @@ app.use('/api/admin', require('./routes/admin'));
 app.use('/api/notifications', require('./routes/notifications'));
 
 // -------------------------
-// 3) Connect to Mongo + Start Server
+// 3) Mongo + Server Start
 // -------------------------
-mongoose.connect(process.env.MONGO_URI, {})
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log('Connected to MongoDB');
-    app.listen(PORT, () => console.log(`Server running on ${PORT}`));
+    console.log("Connected to MongoDB");
+    app.listen(PORT, () => console.log(`Server running on PORT ${PORT}`));
   })
-  .catch(err => console.error('MongoDB error', err));
+  .catch(err => console.error("MongoDB error", err));
