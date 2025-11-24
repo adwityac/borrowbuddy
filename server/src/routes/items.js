@@ -43,7 +43,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       description: req.body.description,
       owner: req.user.id,
       availability: "available",
-      imageUrl: `http://localhost:4000/uploads/${req.file.filename}`,
+      imageUrl: `${BASE_URL}/uploads/${req.file.filename}`,
     });
 
     res.json(item);
