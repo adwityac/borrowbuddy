@@ -1,9 +1,9 @@
-import lawnmower from '../assets/lawnmower.png'
-import drill from '../assets/drillkit.png'
-import projector from '../assets/projector.png'
-import keyboard from '../assets/keyboard.png'
-import stroller from '../assets/stroller.png'
-import camping from '../assets/camping.png'
+import lawnmower from 'public\lawnmower.png'
+import drill from 'public\drillkit.png'
+import projector from 'public\projector.png'
+import keyboard from 'public\keyboard.png'
+import stroller from 'public\stroller.png'
+import camping from 'public\camping.png'
 
 const items = [
   {

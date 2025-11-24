@@ -23,7 +23,7 @@ return (
 <div className="flex justify-end w-full h-full">
   <div className="bg-white rounded-soft p-8 lg:p-12 card-shadow w-full">
     <img
-      src="src\assets\neighbour.jpg"
+      src="public\neighbour.jpg"
       alt="Community illustration"
       className="w-full h-auto rounded-md object-cover"
     />
