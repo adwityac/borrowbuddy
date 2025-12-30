@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// 📌 GET ALL ITEMS
+//  GET ALL ITEMS
 router.get("/", async (req, res) => {
   try {
     const items = await Item.find().sort({ createdAt: -1 });
@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// 📌 GET SINGLE ITEM 
+//  GET SINGLE ITEM 
 router.get("/:id", async (req, res) => {
   try {
     const item = await Item.findById(req.params.id);
@@ -35,7 +35,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// 📌 POST NEW ITEM
+//  POST NEW ITEM
 router.post("/", upload.single("image"), async (req, res) => {
   try {
     const item = await Item.create({

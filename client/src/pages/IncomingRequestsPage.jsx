@@ -25,7 +25,7 @@ export default function IncomingRequestsPage() {
         method: "post",
       });
 
-      loadRequests(); // refresh list
+      loadRequests(); 
     } catch (err) {
       alert(err.response?.data?.message || "Action failed");
     }

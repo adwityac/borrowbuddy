@@ -35,7 +35,7 @@ router.post("/:itemId", requireAuth, async (req, res) => {
       owner: item.owner,
     });
 
-    // 🔔 Notify item owner
+    //  Notify item owner
     await createNotification(
       item.owner,
       `Someone requested your item: ${item.title}`,
@@ -86,7 +86,7 @@ router.post("/:requestId/approve", requireAuth, async (req, res) => {
     // update item availability
     await Item.findByIdAndUpdate(request.item._id, { availability: "requested" });
 
-    // 🔔 Notify requester
+    //  Notify requester
     await createNotification(
       request.requester,
       `Your request for "${request.item.title}" was approved!`,
@@ -114,7 +114,7 @@ router.post("/:requestId/reject", requireAuth, async (req, res) => {
     request.status = "rejected";
     await request.save();
 
-    // 🔔 Notify requester
+    //  Notify requester
     await createNotification(
       request.requester,
       `Your request for "${request.item.title}" was rejected.`,
@@ -146,7 +146,7 @@ router.post("/:requestId/returned", requireAuth, async (req, res) => {
       availability: "available"
     });
 
-    // 🔔 Notify requester
+    //  Notify requester
     await createNotification(
       request.requester,
       `The item "${request.item.title}" has been marked as returned.`,

@@ -53,7 +53,7 @@ export default function ItemDetailPage() {
       <h1 className="text-3xl font-bold mt-4">{item.title}</h1>
       <p className="text-gray-600 mt-2">{item.description}</p>
 
-      {/* Request Button */}
+   
       {item.owner === user?.userId ? (
         <p className="mt-4 text-gray-500">You own this item.</p>
       ) : (

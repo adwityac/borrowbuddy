@@ -2,10 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 export default function ItemCard({ item }) {
-  // Support mock items (which might not have availability)
+
   const isAvailable = item.availability ?? "available";
 
-  // Some mock items might use `id` instead of `_id`
+
   const itemId = item._id || item.id;
 
   return (
@@ -33,7 +33,7 @@ export default function ItemCard({ item }) {
           <span>{isAvailable}</span>
         </div>
 
-        {/* Only show "View" for real DB items */}
+     
         {itemId && (
           <Link
             to={`/item/${itemId}`}

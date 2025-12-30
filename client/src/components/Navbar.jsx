@@ -8,7 +8,6 @@ export default function Navbar() {
   return (
     <nav className="w-full bg-white shadow-sm px-6 py-4 flex justify-between items-center">
 
-      {/* Logo */}
       <div className="flex items-center gap-2">
         <div className="w-8 h-8 bg-green-600 text-white flex items-center justify-center rounded-full font-bold">
           BB
@@ -16,7 +15,7 @@ export default function Navbar() {
         <span className="font-semibold text-lg">BorrowBuddy</span>
       </div>
 
-      {/* Navigation Links */}
+  
       <div className="flex items-center gap-6">
         <NavLink to="/" className="text-gray-700">Home</NavLink>
         <NavLink to="/browse" className="text-gray-700">Browse</NavLink>
@@ -27,7 +26,7 @@ export default function Navbar() {
 
       </div>
 
-      {/* Right-side Auth Buttons */}
+  
       <div className="flex items-center gap-4">
         {!user ? (
           <>

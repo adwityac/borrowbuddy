@@ -11,7 +11,7 @@ export default function MyItemsPage() {
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Load user's items
+
   useEffect(() => {
     (async () => {
       try {
@@ -63,7 +63,7 @@ export default function MyItemsPage() {
     <div className="max-w-4xl mx-auto p-6">
       <h2 className="text-3xl font-bold mb-4">My Items</h2>
 
-      {/* Upload Form */}
+    
       <form
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-soft card-shadow space-y-4"
@@ -102,7 +102,7 @@ export default function MyItemsPage() {
         </button>
       </form>
 
-      {/* Item List */}
+  
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
         {items.map((item) => (
           <div
