@@ -14,4 +14,11 @@ const notificationSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+notificationSchema.virtual("read").get(function read() {
+  return this.seen;
+});
+
+notificationSchema.set("toJSON", { virtuals: true });
+notificationSchema.set("toObject", { virtuals: true });
+
 module.exports = mongoose.model("Notification", notificationSchema);

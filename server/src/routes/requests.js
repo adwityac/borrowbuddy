@@ -19,15 +19,19 @@ router.post("/:itemId", requireAuth, async (req, res) => {
     if (item.owner.toString() === req.user.userId)
       return res.status(400).json({ message: "You cannot request your own item." });
 
+    if (item.availability !== "available") {
+      return res.status(400).json({ message: "This item is not available right now." });
+    }
+
     // Prevent duplicate requests
     const existing = await Request.findOne({
       item: itemId,
       requester: req.user.userId,
-      status: "pending"
+      status: { $in: ["pending", "approved"] }
     });
 
     if (existing)
-      return res.status(400).json({ message: "You already have a pending request for this item." });
+      return res.status(400).json({ message: "You already have an active request for this item." });
 
     const newRequest = await Request.create({
       item: itemId,
@@ -42,7 +46,13 @@ router.post("/:itemId", requireAuth, async (req, res) => {
       "request"
     );
 
-    res.status(201).json(newRequest);
+    const populated = await newRequest.populate([
+      { path: "item" },
+      { path: "owner", select: "name email" },
+      { path: "requester", select: "name email" },
+    ]);
+
+    res.status(201).json(populated);
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Error creating request" });
@@ -54,7 +64,8 @@ router.post("/:itemId", requireAuth, async (req, res) => {
 router.get("/mine", requireAuth, async (req, res) => {
   const requests = await Request.find({ requester: req.user.userId })
     .populate("item")
-    .populate("owner", "name email");
+    .populate("owner", "name email")
+    .sort({ createdAt: -1 });
 
   res.json(requests);
 });
@@ -64,7 +75,8 @@ router.get("/mine", requireAuth, async (req, res) => {
 router.get("/incoming", requireAuth, async (req, res) => {
   const requests = await Request.find({ owner: req.user.userId })
     .populate("item")
-    .populate("requester", "name email");
+    .populate("requester", "name email")
+    .sort({ createdAt: -1 });
 
   res.json(requests);
 });
@@ -79,12 +91,21 @@ router.post("/:requestId/approve", requireAuth, async (req, res) => {
     if (!request) return res.status(404).json({ message: "Request not found" });
     if (request.owner.toString() !== req.user.userId)
       return res.status(403).json({ message: "Not authorized" });
+    if (request.status !== "pending")
+      return res.status(400).json({ message: "Only pending requests can be approved" });
+    if (!request.item || request.item.availability !== "available")
+      return res.status(400).json({ message: "Item is not available" });
 
     request.status = "approved";
     await request.save();
 
     // update item availability
-    await Item.findByIdAndUpdate(request.item._id, { availability: "requested" });
+    await Item.findByIdAndUpdate(request.item._id, { availability: "borrowed" });
+
+    await Request.updateMany(
+      { item: request.item._id, _id: { $ne: request._id }, status: "pending" },
+      { status: "rejected" }
+    );
 
     //  Notify requester
     await createNotification(
@@ -93,7 +114,7 @@ router.post("/:requestId/approve", requireAuth, async (req, res) => {
       "approved"
     );
 
-    res.json(request);
+    res.json(await request.populate("requester", "name email"));
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Error approving request" });
@@ -110,6 +131,8 @@ router.post("/:requestId/reject", requireAuth, async (req, res) => {
     if (!request) return res.status(404).json({ message: "Request not found" });
     if (request.owner.toString() !== req.user.userId)
       return res.status(403).json({ message: "Not authorized" });
+    if (request.status !== "pending")
+      return res.status(400).json({ message: "Only pending requests can be rejected" });
 
     request.status = "rejected";
     await request.save();
@@ -138,6 +161,8 @@ router.post("/:requestId/returned", requireAuth, async (req, res) => {
     if (!request) return res.status(404).json({ message: "Request not found" });
     if (request.owner.toString() !== req.user.userId)
       return res.status(403).json({ message: "Not authorized" });
+    if (request.status !== "approved")
+      return res.status(400).json({ message: "Only approved requests can be marked returned" });
 
     request.status = "returned";
     await request.save();
@@ -157,6 +182,25 @@ router.post("/:requestId/returned", requireAuth, async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Error marking returned" });
+  }
+});
+
+// CANCEL A REQUEST MADE BY LOGGED-IN USER
+router.delete("/:requestId", requireAuth, async (req, res) => {
+  try {
+    const request = await Request.findById(req.params.requestId);
+
+    if (!request) return res.status(404).json({ message: "Request not found" });
+    if (request.requester.toString() !== req.user.userId)
+      return res.status(403).json({ message: "Not authorized" });
+    if (request.status !== "pending")
+      return res.status(400).json({ message: "Only pending requests can be cancelled" });
+
+    await request.deleteOne();
+    res.json({ message: "Request cancelled" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Error cancelling request" });
   }
 });
 

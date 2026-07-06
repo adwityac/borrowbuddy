@@ -8,7 +8,6 @@ import React, {
 import api from "../lib/api";
 
 const AuthContext = createContext();
-console.log('[AuthContext] module loaded');
 
 export const useAuth = () => useContext(AuthContext);
 
@@ -78,6 +77,10 @@ export function AuthProvider({ children }) {
     try {
       const res = await api.post("/auth/refresh");
       setAccessToken(res.data.accessToken);
+      if (res.data.user) {
+        setUser(res.data.user);
+        localStorage.setItem("bb_user", JSON.stringify(res.data.user));
+      }
       return res.data.accessToken;
     } catch (err) {
       setUser(null);
@@ -96,6 +99,7 @@ export function AuthProvider({ children }) {
           method: opts.method || "get",
           data: opts.data,
           headers: {
+            ...(opts.headers || {}),
             Authorization: token ? `Bearer ${token}` : undefined,
           },
         });

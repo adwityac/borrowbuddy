@@ -12,4 +12,8 @@ const requestSchema = new mongoose.Schema({
   },
 }, { timestamps: true });
 
+requestSchema.index({ requester: 1, createdAt: -1 });
+requestSchema.index({ owner: 1, createdAt: -1 });
+requestSchema.index({ item: 1, requester: 1, status: 1 });
+
 module.exports = mongoose.model("Request", requestSchema);

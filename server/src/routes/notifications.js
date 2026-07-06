@@ -16,17 +16,18 @@ router.get("/", requireAuth, async (req, res) => {
   }
 });
 
-// Mark one as read
-router.post("/:id/read", requireAuth, async (req, res) => {
+// Get unread notification count
+router.get("/unread-count", requireAuth, async (req, res) => {
   try {
-    await Notification.findOneAndUpdate(
-      { _id: req.params.id, user: req.user.userId },
-      { read: true }
-    );
-    res.json({ message: "Marked as read" });
+    const count = await Notification.countDocuments({
+      user: req.user.userId,
+      seen: false,
+    });
+
+    res.json({ count });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Error updating notification" });
+    res.status(500).json({ message: "Error fetching notification count" });
   }
 });
 
@@ -35,7 +36,7 @@ router.post("/read-all", requireAuth, async (req, res) => {
   try {
     await Notification.updateMany(
       { user: req.user.userId },
-      { read: true }
+      { seen: true }
     );
     res.json({ message: "All marked as read" });
   } catch (err) {
@@ -52,6 +53,41 @@ router.delete("/clear", requireAuth, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Error clearing notifications" });
+  }
+});
+
+// Mark one as read
+router.post("/:id/read", requireAuth, async (req, res) => {
+  try {
+    const notification = await Notification.findOneAndUpdate(
+      { _id: req.params.id, user: req.user.userId },
+      { seen: true },
+      { new: true }
+    );
+
+    if (!notification) return res.status(404).json({ message: "Notification not found" });
+
+    res.json({ message: "Marked as read", notification });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error updating notification" });
+  }
+});
+
+// Delete one notification
+router.delete("/:id", requireAuth, async (req, res) => {
+  try {
+    const notification = await Notification.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user.userId,
+    });
+
+    if (!notification) return res.status(404).json({ message: "Notification not found" });
+
+    res.json({ message: "Notification removed" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error deleting notification" });
   }
 });
 
